@@ -20,17 +20,22 @@ export function buildSlackBlocks(menus: DailyMenu[]): object[] {
   return blocks;
 }
 
-export async function postToSlack(webhookUrl: string, menus: DailyMenu[]): Promise<void> {
-  const res = await fetch(webhookUrl, {
+export async function postToSlack(token: string, channel: string, menus: DailyMenu[]): Promise<void> {
+  const res = await fetch('https://slack.com/api/chat.postMessage', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify({
+      channel,
       text: `Csüccs napi ajánlat — ${menus[0]?.day ?? ''}`, // fallback for notification previews
       blocks: buildSlackBlocks(menus),
     }),
   });
 
-  if (!res.ok) {
-    throw new Error(`Slack webhook failed: ${res.status} ${await res.text()}`);
+  const body = (await res.json()) as { ok: boolean; error?: string };
+  if (!res.ok || !body.ok) {
+    throw new Error(`Slack chat.postMessage failed: ${res.status} ${body.error ?? JSON.stringify(body)}`);
   }
 }

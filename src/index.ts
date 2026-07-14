@@ -4,7 +4,8 @@ import { postToSlack } from './slack.js';
 const MENU_URL = 'https://csuccs.hu/';
 
 async function main(): Promise<void> {
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  const token = process.env.SLACK_TOKEN;
+  const channel = process.env.SLACK_CHANNEL_ID;
 
   const res = await fetch(MENU_URL);
   if (!res.ok) throw new Error(`Failed to fetch ${MENU_URL}: ${res.status}`);
@@ -16,8 +17,8 @@ async function main(): Promise<void> {
     return;
   }
 
-  if (!webhookUrl) {
-    console.log('SLACK_WEBHOOK_URL not set — dry run, printing menu instead:\n');
+  if (!token || !channel) {
+    console.log('SLACK_TOKEN/SLACK_CHANNEL_ID not set — dry run, printing menu instead:\n');
     for (const menu of menus) {
       console.log(`${menu.category} (${menu.price})`);
       menu.items.forEach((i) => console.log(`  - ${i}`));
@@ -25,7 +26,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  await postToSlack(webhookUrl, menus);
+  await postToSlack(token, channel, menus);
   console.log('Posted to Slack:', menus.map((m) => m.category).join(', '));
 }
 
