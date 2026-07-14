@@ -13,12 +13,19 @@ describe('buildSlackBlocks', () => {
 
     expect(blocks[0]).toEqual({
       type: 'header',
-      text: { type: 'plain_text', text: 'Csüccs napi ajánlat — kedd (július 14.)' },
+      text: { type: 'plain_text', text: ':knife_fork_plate: Csüccs menü — kedd (július 14.)', emoji: true },
     });
-    expect(blocks).toHaveLength(1 + menus.length * 2); // header + (divider + section) per category
-    expect(blocks[2]).toEqual({
+    expect(blocks).toHaveLength(1 + menus.length + 1); // header + one section per category + footer context
+    expect(blocks[1]).toEqual({
       type: 'section',
-      text: { type: 'mrkdwn', text: '*Heti Menü* (2.890 Ft)\n• Leves\n• Főétel' },
+      text: { type: 'mrkdwn', text: '*Heti Menü* — 2.890 Ft\nLeves\nFőétel' },
+    });
+    expect(blocks[blocks.length - 1]).toEqual({
+      type: 'context',
+      elements: [
+        { type: 'mrkdwn', text: ':link: <https://csuccs.com|csuccs.com>' },
+        { type: 'mrkdwn', text: 'Sent using Csüccsfutár 2.0' },
+      ],
     });
   });
 });
