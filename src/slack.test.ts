@@ -18,7 +18,7 @@ describe('buildSlackBlocks', () => {
     expect(blocks).toHaveLength(1 + menus.length + 1); // header + one section per category + footer context
     expect(blocks[1]).toEqual({
       type: 'section',
-      text: { type: 'mrkdwn', text: '*Heti Menü* — 2.890 Ft\nLeves\nFőétel' },
+      text: { type: 'mrkdwn', text: '*Heti Menü* — 2.890 Ft\n• Leves\n• Főétel' },
     });
     expect(blocks[blocks.length - 1]).toEqual({
       type: 'context',

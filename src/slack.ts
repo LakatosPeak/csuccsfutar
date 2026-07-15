@@ -12,7 +12,10 @@ export function buildSlackBlocks(menus: DailyMenu[]): object[] {
   for (const menu of menus) {
     blocks.push({
       type: 'section',
-      text: { type: 'mrkdwn', text: `*${menu.category}* — ${menu.price}\n${menu.items.join('\n')}` },
+      text: {
+        type: 'mrkdwn',
+        text: `*${menu.category}* — ${menu.price}\n${menu.items.map((i) => `• ${i}`).join('\n')}`,
+      },
     });
   }
 
